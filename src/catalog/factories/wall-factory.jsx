@@ -7,8 +7,16 @@ import Translator from '../../translator/translator';
 const epsilon = 20;
 const STYLE_TEXT = { textAnchor: 'middle' };
 const STYLE_LINE = { stroke: SharedStyle.LINE_MESH_COLOR.selected };
-const STYLE_RECT = { strokeWidth: 1, stroke: SharedStyle.LINE_MESH_COLOR.unselected, fill: 'url(#diagonalFill)' };
-const STYLE_RECT_SELECTED = { ...STYLE_RECT, stroke: SharedStyle.LINE_MESH_COLOR.selected };
+const STYLE_RECT = { 
+  strokeWidth: 1, 
+  stroke: '#8299a8', 
+  fill: '#8299a8'
+};
+const STYLE_RECT_SELECTED = { 
+  strokeWidth: 2, 
+  stroke: SharedStyle.LINE_MESH_COLOR.selected, 
+  fill: '#8299a8'
+};
 
 let translator = new Translator();
 
@@ -30,7 +38,7 @@ export default function WallFactory(name, info, textures) {
         label: translator.t('thickness'),
         type: 'length-measure',
         defaultValue: {
-          length: 20
+          length: 12
         }
       }
     },

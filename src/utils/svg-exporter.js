@@ -11,7 +11,7 @@ export function exportToSvg(scene, width = 800, height = 600) {
   // Calculate bounds - start with extremes
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   
-  // Render lines (walls)
+  // Render lines (walls and separators)
   selectedLayer.lines.forEach((line, lineId) => {
     const vertex1 = selectedLayer.vertices.get(line.vertices.get(0));
     const vertex2 = selectedLayer.vertices.get(line.vertices.get(1));
@@ -25,6 +25,20 @@ export function exportToSvg(scene, width = 800, height = 600) {
       const x2 = vertex2.x;
       const y2 = -vertex2.y; // Flip Y
       
+      // Style based on line type
+      let strokeColor = "#94a3b8";
+      let strokeWidth = "4";
+      let strokeDasharray = "";
+      
+      if (line.type === 'internal-separator') {
+        strokeColor = "#999999";
+        strokeWidth = "2";
+        strokeDasharray = "8,5";
+      } else if (line.type === 'wall') {
+        strokeColor = "#94a3b8";
+        strokeWidth = "4";
+      }
+      
       svgElements.push(
         <line
           key={`line-${lineId}`}
@@ -33,11 +47,13 @@ export function exportToSvg(scene, width = 800, height = 600) {
           y1={y1}
           x2={x2}
           y2={y2}
-          stroke="#000000"
-          strokeWidth="2"
+          stroke={strokeColor}
+          strokeWidth={strokeWidth}
+          strokeDasharray={strokeDasharray}
           data-element-type="line"
           data-element-id={lineId}
           data-custom-id={customId}
+          data-line-type={line.type}
         />
       );
       
@@ -204,7 +220,7 @@ export function exportToSvg(scene, width = 800, height = 600) {
       const renderComplexFurniture = (item, itemId, elementId, customId, x, y, itemWidth, itemHeight) => {
         const elements = [];
         const chairSize = 25;
-        const chairOffset = 8;
+        const chairOffset = 0;
         
         if (item.type === 'office desk') {
           // Render circular desk
@@ -273,12 +289,12 @@ export function exportToSvg(scene, width = 800, height = 600) {
             />
           );
           
-          // Add chairs around the table
+          // Add chairs around the table (touching the table)
           const chairPositions = [
-            { x: item.x, y: -item.y + itemHeight/2 + chairSize + chairOffset }, // top
-            { x: item.x, y: -item.y - itemHeight/2 - chairSize - chairOffset }, // bottom
-            { x: item.x + itemWidth/2 + chairSize + chairOffset, y: -item.y }, // right
-            { x: item.x - itemWidth/2 - chairSize - chairOffset, y: -item.y }  // left
+            { x: item.x, y: -item.y + itemHeight/2 + chairSize/2 }, // top
+            { x: item.x, y: -item.y - itemHeight/2 - chairSize/2 }, // bottom
+            { x: item.x + itemWidth/2 + chairSize/2, y: -item.y }, // right
+            { x: item.x - itemWidth/2 - chairSize/2, y: -item.y }  // left
           ];
           
           chairPositions.forEach((pos, i) => {
@@ -332,14 +348,14 @@ export function exportToSvg(scene, width = 800, height = 600) {
             />
           );
           
-          // Add 6 chairs around the table
+          // Add 6 chairs around the table (touching the table)
           const chairPositions = [
-            { x: item.x, y: -item.y + itemHeight/2 + chairSize + chairOffset }, // top center
-            { x: item.x, y: -item.y - itemHeight/2 - chairSize - chairOffset }, // bottom center
-            { x: item.x + itemWidth/2 + chairSize + chairOffset, y: -item.y + itemHeight/4 }, // right 1
-            { x: item.x + itemWidth/2 + chairSize + chairOffset, y: -item.y - itemHeight/4 }, // right 2
-            { x: item.x - itemWidth/2 - chairSize - chairOffset, y: -item.y + itemHeight/4 }, // left 1
-            { x: item.x - itemWidth/2 - chairSize - chairOffset, y: -item.y - itemHeight/4 }  // left 2
+            { x: item.x, y: -item.y + itemHeight/2 + chairSize/2 }, // top center
+            { x: item.x, y: -item.y - itemHeight/2 - chairSize/2 }, // bottom center
+            { x: item.x + itemWidth/2 + chairSize/2, y: -item.y + itemHeight/4 }, // right 1
+            { x: item.x + itemWidth/2 + chairSize/2, y: -item.y - itemHeight/4 }, // right 2
+            { x: item.x - itemWidth/2 - chairSize/2, y: -item.y + itemHeight/4 }, // left 1
+            { x: item.x - itemWidth/2 - chairSize/2, y: -item.y - itemHeight/4 }  // left 2
           ];
           
           chairPositions.forEach((pos, i) => {
@@ -397,58 +413,162 @@ export function exportToSvg(scene, width = 800, height = 600) {
     let fillOpacity = "1";
     let strokeDasharray = "";
     let textLabel = item.type;
+    let isCircular = false;
     
     if (item.type === 'office-space') {
       fillColor = item.properties.get('color') || '#e8f4f8';
       fillOpacity = "0.3";
-      strokeDasharray = "5,5";
+      strokeColor = "none";
+      strokeWidth = "0";
+      strokeDasharray = "";
       textLabel = item.properties.get('label') || 'OFFICE';
+    } else if (item.type === 'coffee-area') {
+      fillColor = "#8db4d3";
+      strokeColor = "#6b9dc4";
+      strokeWidth = "2";
+      fillOpacity = "1";
+      textLabel = "";
+      isCircular = true;
+    } else if (item.type === 'bathroom-area') {
+      fillColor = "#a8c8e1";
+      strokeColor = "#7ba7c7";
+      strokeWidth = "2";
+      fillOpacity = "1";
+      textLabel = "";
+      isCircular = true;
+    } else if (item.type === 'label') {
+      // Label is text-only, no background shape
+      fillColor = "none";
+      strokeColor = "none";
+      strokeWidth = "0";
+      fillOpacity = "0";
+      textLabel = item.properties.get('text') || 'LABEL';
     }
 
-    svgElements.push(
-      <rect
-        key={`item-${itemId}`}
-        id={elementId}
-        x={x}
-        y={y}
-        width={itemWidth}
-        height={itemHeight}
-        fill={fillColor}
-        fillOpacity={fillOpacity}
-        stroke={strokeColor}
-        strokeWidth={strokeWidth}
-        strokeDasharray={strokeDasharray}
-        data-element-type="item"
-        data-element-id={itemId}
-        data-custom-id={customId}
-        data-item-type={item.type}
-      />
-    );
+    if (item.type === 'label') {
+      // For labels, only render text, no background shape
+      // Update bounds minimally for text
+      minX = Math.min(minX, item.x - 50);
+      minY = Math.min(minY, -item.y - 10);
+      maxX = Math.max(maxX, item.x + 50);
+      maxY = Math.max(maxY, -item.y + 10);
+    } else if (isCircular) {
+      // Render circular items
+      const radius = 30;
+      svgElements.push(
+        <g key={`item-${itemId}`}>
+          <circle
+            id={elementId}
+            cx={item.x}
+            cy={-item.y}
+            r={radius}
+            fill={fillColor}
+            fillOpacity={fillOpacity}
+            stroke={strokeColor}
+            strokeWidth={strokeWidth}
+            data-element-type="item"
+            data-element-id={itemId}
+            data-custom-id={customId}
+            data-item-type={item.type}
+          />
+          
+          {/* Add icon paths based on item type */}
+          {item.type === 'coffee-area' && (
+            <g transform={`translate(${item.x}, ${-item.y}) scale(0.8, 0.8) translate(-375, -375)`}>
+              <path
+                d="M374.7,358.984c-9.3,0-16.9,7.6-16.9,16.9s7.6,16.9,16.9,16.9,16.9-7.6,16.9-16.9-7.6-16.9-16.9-16.9ZM377.604,364.502l-.042-.043c-.222-.223-.222-.586,0-.809.222-.224.581-.224.802,0l.042.043c1.345,1.357,1.345,3.565,0,4.922-.438.441-.678,1.028-.678,1.652s.241,1.211.678,1.652c.222.224.222.586,0,.809-.111.112-.256.168-.401.168s-.29-.056-.401-.167c-.652-.657-1.011-1.531-1.011-2.461,0-.93.359-1.804,1.011-2.461.903-.911.903-2.393,0-3.304ZM374.321,364.502l-.042-.043c-.222-.223-.222-.586,0-.809.222-.224.581-.224.802,0l.042.043c.652.657,1.011,1.531,1.011,2.461s-.359,1.804-1.011,2.461c-.438.441-.678,1.028-.678,1.652s.241,1.211.678,1.652c.222.223.222.586,0,.809-.111.112-.256.168-.401.168s-.29-.056-.401-.168c-.652-.657-1.011-1.531-1.011-2.461s.359-1.804,1.011-2.461c.438-.441.678-1.028.678-1.652s-.241-1.211-.678-1.652ZM371.037,364.502l-.042-.043c-.222-.223-.222-.586,0-.809.222-.224.581-.224.802,0l.042.043c1.345,1.357,1.345,3.565,0,4.922-.438.441-.678,1.028-.678,1.652s.241,1.211.678,1.652c.222.223.222.586,0,.809-.111.112-.256.168-.401.168s-.29-.056-.401-.168c-.652-.657-1.011-1.531-1.011-2.461,0-.93.359-1.804,1.011-2.461.903-.911.903-2.393,0-3.304ZM386.3,385.679h-23.201c-.313,0-.567-.256-.567-.572s.254-.572.567-.572h6.73c-1.982-1.286-3.3-3.528-3.3-6.077v-3.878c0-.316.254-.572.567-.572h15.204c.313,0,.567.256.567.572v1.43h1.105c1.548,0,2.808,1.271,2.808,2.832s-1.26,2.832-2.808,2.832h-1.857c-.579,1.169-1.464,2.158-2.547,2.861h6.73c.313,0,.567.256.567.572s-.254.572-.567.572Z"
+                fill="white"
+                stroke="none"
+              />
+            </g>
+          )}
+          
+          {item.type === 'bathroom-area' && (
+            <g transform={`translate(${item.x}, ${-item.y}) scale(0.8, 0.8) translate(-1030, -410)`}>
+              <path
+                d="M1030.117,394.786c9.267,0,16.778,7.511,16.778,16.778s-7.511,16.778-16.778,16.778-16.778-7.511-16.778-16.778,7.511-16.778,16.778-16.778h0ZM1022.318,423.852c.158.094.18.201.338.309.122.086.288.158.489.18.396.043.971.014,1.389.007h7.835l2.662-.007c.468-.058.619-.302.842-.568.173-.612.101-.64-.029-1.245-.086-.396-.209-.863-.266-1.252l-.784-3.626c.388-.043,3.763-.014,4.468-.014,1.014,0,2.813.266,2.806-1.727-.022-3.014-.014-6.029-.014-9.036-1.108.187-2.461.101-3.633.101h-3.763c-.043.489-.014,2.626-.014,3.281,0,1.036.043,2.166-.101,3.173-.331,2.324-1.475,4.144-3.065,5.54-.072.065-.129.108-.23.187-.151.122-.309.23-.482.36-1.856,1.345-4.302,1.777-6.612,1.554-.525-.05-.942-.173-1.432-.245-.173.317-.252,1.086-.345,1.489-.058.252-.115.489-.158.734-.086.446.058.496.101.806h0ZM1032.398,411.535h-15.281c-.144,2.338.669,4.482,2.216,6.123.288.302.741.676,1.13.935,1.568,1.058,2.842,1.446,4.871,1.446,1.309,0,2.417-.173,3.504-.669,3-1.374,4.95-4.381,4.712-7.835h-1.151ZM1037.7,399.175c-.324.266-.36.245-.525.748-.05,1.115.446.237.324,1.935l-2.964.007c-.475.079-.547.367-.547.871l.007,2.619c.137.705.777.547,1.504.547h6.209c.827-.007.719-.626.719-1.338,0-3.295.511-2.655-3.259-2.698-.029,0-.094,0-.122-.007l-.101-.029c-.007,0-.022-.007-.029-.014-.007-.799-.086-.82.108-1.079.101-.129.187-.317.209-.496.036-.281-.029-.568-.173-.755-.288-.381-.791-.532-1.36-.309h0ZM1029.808,410.557h2.374c.022-.863.144-1.691-.345-2.194-.209-.216-.216-.18-.475-.338l-.324-.101c-.324.079-1.827.029-2.273.029h-2.281c-1.532-.007-3.101-.022-4.633.007-.741.007-2.259-.137-2.784.201-.259.165-.525.518-.568.942s-.007.993-.007,1.453h11.317Z"
+                fill="white"
+                stroke="none"
+              />
+            </g>
+          )}
+        </g>
+      );
+      
+      // Update bounds for circular items
+      minX = Math.min(minX, item.x - radius);
+      minY = Math.min(minY, -item.y - radius);
+      maxX = Math.max(maxX, item.x + radius);
+      maxY = Math.max(maxY, -item.y + radius);
+    } else {
+      // Render rectangular items
+      svgElements.push(
+        <rect
+          key={`item-${itemId}`}
+          id={elementId}
+          x={x}
+          y={y}
+          width={itemWidth}
+          height={itemHeight}
+          fill={fillColor}
+          fillOpacity={fillOpacity}
+          stroke={strokeColor}
+          strokeWidth={strokeWidth}
+          strokeDasharray={strokeDasharray}
+          data-element-type="item"
+          data-element-id={itemId}
+          data-custom-id={customId}
+          data-item-type={item.type}
+        />
+      );
+      
+      // Update bounds using the actual rectangle coordinates
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x + itemWidth);
+      maxY = Math.max(maxY, y + itemHeight);
+    }
     
-    // Add text label
-    svgElements.push(
-      <text
-        key={`item-text-${itemId}`}
-        x={item.x}
-        y={-item.y}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontSize={item.type === 'office-space' ? '16' : '12'}
-        fontWeight={item.type === 'office-space' ? 'bold' : 'normal'}
-        fontFamily={item.type === 'office-space' ? 'Arial, Helvetica, sans-serif' : 'inherit'}
-        fill={item.type === 'office-space' ? '#2c3e50' : '#333333'}
-        letterSpacing={item.type === 'office-space' ? '0.5px' : 'normal'}
-        pointerEvents="none"
-      >
-        {textLabel}
-      </text>
-    );
-    
-    // Update bounds using the actual rectangle coordinates
-    minX = Math.min(minX, x);
-    minY = Math.min(minY, y);
-    maxX = Math.max(maxX, x + itemWidth);
-    maxY = Math.max(maxY, y + itemHeight);
+    // Add text label (if there is text to show)
+    if (textLabel) {
+      let fontSize = '12';
+      let fontWeight = 'normal';
+      let fontFamily = 'inherit';
+      let textColor = '#333333';
+      let letterSpacing = 'normal';
+      
+      if (item.type === 'office-space') {
+        fontSize = '16';
+        fontWeight = 'bold';
+        fontFamily = 'Arial, Helvetica, sans-serif';
+        textColor = '#2c3e50';
+        letterSpacing = '0.5px';
+      } else if (item.type === 'label') {
+        fontSize = item.properties.get('fontSize') ? item.properties.get('fontSize').get('length') : '16';
+        fontWeight = 'bold';
+        fontFamily = 'Arial, Helvetica, sans-serif';
+        textColor = item.properties.get('color') || '#2c3e50';
+        letterSpacing = '0.5px';
+      }
+      
+      svgElements.push(
+        <text
+          key={`item-text-${itemId}`}
+          x={item.x}
+          y={-item.y}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={fontSize}
+          fontWeight={fontWeight}
+          fontFamily={fontFamily}
+          fill={textColor}
+          letterSpacing={letterSpacing}
+          pointerEvents="none"
+        >
+          {textLabel}
+        </text>
+      );
+    }
   });
 
   // Handle case where no elements exist

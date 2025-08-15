@@ -68,8 +68,8 @@ export default {
     }
 
     const rectStyle = {
-      stroke: element.selected ? '#0096fd' : '#333', 
-      strokeWidth: '2px', 
+      stroke: element.selected ? '#0096fd' : 'none', 
+      strokeWidth: element.selected ? '2px' : '0', 
       fill: color,
       fillOpacity: 0.3
     };
@@ -87,21 +87,10 @@ export default {
           data-element-id={element.id}
           style={rectStyle}
         />
-        {/* Dashed border for office outline */}
-        <rect 
-          x="0" 
-          y="0" 
-          width={width} 
-          height={height}
-          fill="none"
-          stroke="#666"
-          strokeWidth="1"
-          strokeDasharray="5,5"
-        />
         {/* Office label */}
         <text 
           x={width / 2} 
-          y={height / 2}
+          y={-height / 2 + 8}
           transform={`translate(0, 0) scale(1, -1) rotate(${textRotation})`}
           style={{
             textAnchor: 'middle', 
@@ -117,7 +106,7 @@ export default {
         {/* Dimensions text */}
         <text 
           x={width / 2} 
-          y={height / 2 + 20}
+          y={-height / 2 + 28}
           transform={`translate(0, 0) scale(1, -1) rotate(${textRotation})`}
           style={{
             textAnchor: 'middle', 
