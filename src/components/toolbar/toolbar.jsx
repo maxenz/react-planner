@@ -5,6 +5,7 @@ import { FaFile, FaMousePointer, FaPlus } from 'react-icons/fa';
 import ToolbarButton from './toolbar-button';
 import ToolbarSaveButton from './toolbar-save-button';
 import ToolbarLoadButton from './toolbar-load-button';
+import ToolbarSvgExportButton from './toolbar-svg-export-button';
 import If from '../../utils/react-if';
 import {
   MODE_IDLE,
@@ -96,6 +97,10 @@ export default class Toolbar extends Component {
       {
         index: 2, condition: allowProjectFileSupport,
         dom: <ToolbarLoadButton state={state} />
+      },
+      {
+        index: 2.5, condition: true,
+        dom: <ToolbarSvgExportButton state={state} />
       },
       {
         index: 3, condition: true,

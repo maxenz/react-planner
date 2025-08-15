@@ -32,7 +32,8 @@ import {
   ADD_CIRCULAR_GUIDE,
   REMOVE_HORIZONTAL_GUIDE,
   REMOVE_VERTICAL_GUIDE,
-  REMOVE_CIRCULAR_GUIDE
+  REMOVE_CIRCULAR_GUIDE,
+  EXPORT_SVG
 } from '../constants';
 
 export function loadProject(sceneJSON) {
@@ -276,5 +277,11 @@ export function removeCircularGuide( guideID ) {
   return {
     type: REMOVE_CIRCULAR_GUIDE,
     guideID
+  };
+}
+
+export function exportSvg() {
+  return {
+    type: EXPORT_SVG
   };
 }

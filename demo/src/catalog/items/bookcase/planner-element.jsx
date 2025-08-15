@@ -147,6 +147,22 @@ export default {
   },
 
   properties: {
+    width: {
+      label: 'Width',
+      type: 'length-measure',
+      defaultValue: {
+        length: 80,
+        unit: 'cm'
+      }
+    },
+    height: {
+      label: 'Height',
+      type: 'length-measure',
+      defaultValue: {
+        length: 80,
+        unit: 'cm'
+      }
+    },
     altitude: {
       label: 'altitude',
       type: 'length-measure',
@@ -154,12 +170,25 @@ export default {
         length: 0,
         unit: 'cm'
       }
+    },
+    customId: {
+      label: 'Custom ID',
+      type: 'string',
+      defaultValue: ''
     }
   },
 
   render2D: function (element, layer, scene) {
 
     let angle = element.rotation + 90;
+    
+    // Use dynamic width/height if available, otherwise fallback to constants
+    const itemWidth = element.properties.has('width') 
+      ? element.properties.get('width').get('length') 
+      : WIDTH;
+    const itemHeight = element.properties.has('height') 
+      ? element.properties.get('height').get('length') 
+      : DEPTH;
 
     let textRotation = 0;
     if (Math.sin(angle * Math.PI / 180) < 0) {
@@ -167,13 +196,20 @@ export default {
     }
 
     let rect_style = {stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce'};
-
+    
+    const customId = element.properties.get('customId') || '';
+    const elementId = customId || `bookcase-${element.id}`;
 
     return (
-      <g transform={ `translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key='1' x='0' y='0' width={WIDTH} height= {DEPTH} style={rect_style}/>
+      <g transform={ `translate(${-itemWidth / 2},${-itemHeight / 2})`}>
+        <rect key='1' x='0' y='0' width={itemWidth} height={itemHeight} 
+              id={elementId}
+              data-custom-id={customId}
+              data-element-type="item"
+              data-element-id={element.id}
+              style={rect_style}/>
         <text key='2' x='0' y='0'
-              transform={ `translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
+              transform={ `translate(${itemWidth / 2}, ${itemHeight / 2}) scale(1,-1) rotate(${textRotation})`}
           style={{textAnchor: 'middle', fontSize: '11px'}}>
         {element.type}</text>
       </g>
@@ -184,6 +220,14 @@ export default {
   render3D: function (element, layer, scene) {
 
     let newAltitude = element.properties.get('altitude').get('length');
+    
+    // Use dynamic width/height if available, otherwise fallback to constants
+    const itemWidth = element.properties.has('width') 
+      ? element.properties.get('width').get('length') 
+      : WIDTH;
+    const itemHeight = element.properties.has('height') 
+      ? element.properties.get('height').get('length') 
+      : DEPTH;
 
     /**************** lod max ******************/
 
@@ -198,8 +242,8 @@ export default {
 
     bookcaseMaxLOD.rotation.y+=Math.PI/2;
     bookcaseMaxLOD.position.y+= newAltitude;
-    bookcaseMaxLOD.position.z+= WIDTH/2;
-    bookcaseMaxLOD.scale.set(WIDTH / deltaX, HEIGHT / deltaY, DEPTH / deltaZ);
+    bookcaseMaxLOD.position.z+= itemWidth/2;
+    bookcaseMaxLOD.scale.set(itemWidth / deltaX, HEIGHT / deltaY, itemHeight / deltaZ);
 
     /**************** lod min ******************/
 
@@ -207,8 +251,8 @@ export default {
     bookcaseMinLOD.add(objectMinLOD.clone());
     bookcaseMinLOD.rotation.y+=Math.PI/2;
     bookcaseMinLOD.position.y+= newAltitude;
-    bookcaseMinLOD.position.z+= WIDTH/2;
-    bookcaseMinLOD.scale.set(WIDTH / deltaX, HEIGHT / deltaY, DEPTH / deltaZ);
+    bookcaseMinLOD.position.z+= itemWidth/2;
+    bookcaseMinLOD.scale.set(itemWidth / deltaX, HEIGHT / deltaY, itemHeight / deltaZ);
 
     /**** all level of detail ***/
 

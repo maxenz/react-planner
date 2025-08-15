@@ -33,7 +33,8 @@ import {
   ADD_CIRCULAR_GUIDE,
   REMOVE_HORIZONTAL_GUIDE,
   REMOVE_VERTICAL_GUIDE,
-  REMOVE_CIRCULAR_GUIDE
+  REMOVE_CIRCULAR_GUIDE,
+  EXPORT_SVG
 } from '../constants';
 
 import { Project } from '../class/export';
@@ -148,6 +149,14 @@ export default function (state, action) {
 
     case REMOVE_CIRCULAR_GUIDE:
       return Project.removeCircularGuide(state, action.guideID).updatedState;
+
+    case EXPORT_SVG:
+      const { exportToSvg, downloadSvg } = require('../utils/svg-exporter');
+      const svgData = exportToSvg(state.scene);
+      if (svgData) {
+        downloadSvg(svgData);
+      }
+      return state;
 
     default:
       return state;

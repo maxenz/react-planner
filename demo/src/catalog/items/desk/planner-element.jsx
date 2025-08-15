@@ -145,6 +145,11 @@ export default {
         length: 0,
         unit: 'cm'
       }
+    },
+    customId: {
+      label: 'Custom ID',
+      type: 'string',
+      defaultValue: ''
     }
   },
 
@@ -157,9 +162,16 @@ export default {
       textRotation = 180;
     }
 
+    const customId = element.properties.get('customId') || '';
+    const elementId = customId || `desk-${element.id}`;
+
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
         <rect key='1' x='0' y='0' width={WIDTH} height={DEPTH}
+              id={elementId}
+              data-custom-id={customId}
+              data-element-type="item"
+              data-element-id={element.id}
               style={{stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce'}}/>
         <text key='2' x='0' y='0'
               transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}

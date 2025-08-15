@@ -1,0 +1,5 @@
+<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+  <rect x="8" y="8" width="48" height="36" fill="#e8f4f8" stroke="#333" stroke-width="2" stroke-dasharray="4,2"/>
+  <text x="32" y="28" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">OFFICE</text>
+</svg>
+EOF < /dev/null
