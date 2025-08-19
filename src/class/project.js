@@ -266,6 +266,41 @@ class Project{
           state = Item.setProperties(state, selectedLayer, item.id, originalElement.get('properties')).updatedState;
         }
       }
+      else if (elementType === 'lines') {
+        // For lines (walls), we need to get the vertex positions and create new vertices
+        const vertices = originalElement.get('vertices');
+        if (vertices && vertices.size >= 2) {
+          // Get the original vertex positions
+          const vertex1ID = vertices.get(0);
+          const vertex2ID = vertices.get(1);
+          const vertex1 = state.getIn(['scene', 'layers', selectedLayer, 'vertices', vertex1ID]);
+          const vertex2 = state.getIn(['scene', 'layers', selectedLayer, 'vertices', vertex2ID]);
+          
+          if (vertex1 && vertex2) {
+            // Calculate new positions with offset
+            const offsetX = 50 + (itemIndex * offsetDistance);
+            const offsetY = 50 + (itemIndex * offsetDistance);
+            
+            const newX1 = vertex1.get('x') + offsetX;
+            const newY1 = vertex1.get('y') + offsetY;
+            const newX2 = vertex2.get('x') + offsetX;
+            const newY2 = vertex2.get('y') + offsetY;
+
+            // Create new line with new vertices
+            const { updatedState: newState, line } = Line.create(
+              state,
+              selectedLayer,
+              originalElement.get('type'),
+              newX1,
+              newY1,
+              newX2,
+              newY2,
+              originalElement.get('properties')
+            );
+            state = newState;
+          }
+        }
+      }
       // Could add support for other element types (areas, lines, holes) here in the future
 
       itemIndex++;
