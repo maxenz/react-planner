@@ -312,6 +312,7 @@ export class State extends Record({
   errors: new List(),
   warnings: new List(),
   clipboardProperties: new Map(),
+  clipboardElements: new List(),
   selectedElementsHistory: new List(),
   misc: new Map(),   //additional info
   alterate: false

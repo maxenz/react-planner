@@ -24,6 +24,8 @@ import {
   THROW_WARNING,
   COPY_PROPERTIES,
   PASTE_PROPERTIES,
+  COPY_ELEMENTS,
+  PASTE_ELEMENTS,
   PUSH_LAST_SELECTED_CATALOG_ELEMENT_TO_HISTORY,
   ALTERATE_STATE,
   SET_MODE,
@@ -214,6 +216,19 @@ export function copyProperties(properties) {
 export function pasteProperties() {
   return {
     type: PASTE_PROPERTIES
+  };
+}
+
+export function copyElements(elements) {
+  return {
+    type: COPY_ELEMENTS,
+    elements
+  };
+}
+
+export function pasteElements() {
+  return {
+    type: PASTE_ELEMENTS
   };
 }
 

@@ -25,6 +25,8 @@ import {
   THROW_WARNING,
   COPY_PROPERTIES,
   PASTE_PROPERTIES,
+  COPY_ELEMENTS,
+  PASTE_ELEMENTS,
   PUSH_LAST_SELECTED_CATALOG_ELEMENT_TO_HISTORY,
   ALTERATE_STATE,
   SET_MODE,
@@ -121,6 +123,13 @@ export default function (state, action) {
     case PASTE_PROPERTIES:
       state = state.merge({ sceneHistory: history.historyPush(state.sceneHistory, state.scene) });
       return Project.pasteProperties(state).updatedState;
+
+    case COPY_ELEMENTS:
+      return Project.copyElements(state, action.elements).updatedState;
+
+    case PASTE_ELEMENTS:
+      state = state.merge({ sceneHistory: history.historyPush(state.sceneHistory, state.scene) });
+      return Project.pasteElements(state).updatedState;
 
     case PUSH_LAST_SELECTED_CATALOG_ELEMENT_TO_HISTORY:
       return Project.pushLastSelectedCatalogElementToHistory(state, action.element).updatedState;

@@ -208,6 +208,72 @@ class Project{
     return { updatedState: state };
   }
 
+  static copyElements(state, elements) {
+    state = state.set('clipboardElements', elements);
+
+    return { updatedState: state };
+  }
+
+  static pasteElements(state) {
+    const clipboardElements = state.get('clipboardElements');
+    if (!clipboardElements || clipboardElements.size === 0) {
+      return { updatedState: state };
+    }
+
+    const selectedLayer = state.getIn(['scene', 'selectedLayer']);
+    const mouseCoords = state.get('mouse');
+    
+    // Get mouse position for pasting, default to offset from original if no mouse position
+    let pasteX = mouseCoords ? mouseCoords.get('x') : 100;
+    let pasteY = mouseCoords ? mouseCoords.get('y') : 100;
+
+    // If mouse position isn't available, use a default offset
+    if (!mouseCoords || pasteX === 0 || pasteY === 0) {
+      pasteX = 100;
+      pasteY = 100;
+    }
+
+    // Calculate offset for multiple items to avoid overlapping
+    let itemIndex = 0;
+    const offsetDistance = 50; // 50 units offset between pasted items
+
+    clipboardElements.forEach(element => {
+      const elementType = element.get('elementType');
+      const originalElement = element.get('element');
+
+      if (elementType === 'items') {
+        // Calculate new position: original position + small offset for each item
+        const originalX = originalElement.get('x') || 0;
+        const originalY = originalElement.get('y') || 0;
+        
+        const newX = originalX + 50 + (itemIndex * offsetDistance);
+        const newY = originalY + 50 + (itemIndex * offsetDistance);
+
+        const { updatedState: newState, item } = Item.create(
+          state,
+          selectedLayer,
+          originalElement.get('type'),
+          newX,
+          newY,
+          originalElement.get('width') || 200,
+          originalElement.get('height') || 100,
+          originalElement.get('rotation') || 0
+        );
+        state = newState;
+
+        // Copy properties if they exist
+        if (originalElement.has('properties')) {
+          state = Item.setProperties(state, selectedLayer, item.id, originalElement.get('properties')).updatedState;
+        }
+      }
+      // Could add support for other element types (areas, lines, holes) here in the future
+
+      itemIndex++;
+    });
+
+    return { updatedState: state };
+  }
+
   static pushLastSelectedCatalogElementToHistory(state, element) {
     let currHistory = state.selectedElementsHistory;
 

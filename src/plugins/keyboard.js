@@ -6,6 +6,8 @@ import {
   KEYBOARD_BUTTON_CODE
 } from '../constants';
 
+import { List, Map } from 'immutable';
+
 import {
   rollback,
   undo,
@@ -13,6 +15,8 @@ import {
   toggleSnap,
   copyProperties,
   pasteProperties,
+  copyElements,
+  pasteElements,
   setAlterateState
 } from '../actions/project-actions';
 
@@ -59,32 +63,97 @@ export default function keyboard() {
         }
         case KEYBOARD_BUTTON_CODE.C:
         {
-          let selectedLayer = state.getIn(['scene', 'selectedLayer']);
-          let selected = state.getIn(['scene', 'layers', selectedLayer, 'selected']);
+          if (event.ctrlKey || event.metaKey) {
+            let selectedLayer = state.getIn(['scene', 'selectedLayer']);
+            let selected = state.getIn(['scene', 'layers', selectedLayer, 'selected']);
 
-          if ( ( mode === MODE_IDLE || mode === MODE_3D_VIEW ) && (selected.holes.size || selected.areas.size || selected.items.size || selected.lines.size)) {
-            if (selected.holes.size) {
-              let hole = state.getIn(['scene', 'layers', selectedLayer, 'holes', selected.holes.get(0)]);
-              store.dispatch(copyProperties(hole.get('properties')));
+            if ( ( mode === MODE_IDLE || mode === MODE_3D_VIEW ) && (selected.holes.size || selected.areas.size || selected.items.size || selected.lines.size)) {
+              // Copy entire elements when Ctrl+C is pressed
+              let elementsToClipboard = [];
+
+              // Copy selected items
+              if (selected.items.size) {
+                selected.items.forEach(itemID => {
+                  let item = state.getIn(['scene', 'layers', selectedLayer, 'items', itemID]);
+                  elementsToClipboard.push(Map({
+                    elementType: 'items',
+                    element: item
+                  }));
+                });
+              }
+
+              // Copy selected areas
+              if (selected.areas.size) {
+                selected.areas.forEach(areaID => {
+                  let area = state.getIn(['scene', 'layers', selectedLayer, 'areas', areaID]);
+                  elementsToClipboard.push(Map({
+                    elementType: 'areas',
+                    element: area
+                  }));
+                });
+              }
+
+              // Copy selected lines
+              if (selected.lines.size) {
+                selected.lines.forEach(lineID => {
+                  let line = state.getIn(['scene', 'layers', selectedLayer, 'lines', lineID]);
+                  elementsToClipboard.push(Map({
+                    elementType: 'lines',
+                    element: line
+                  }));
+                });
+              }
+
+              // Copy selected holes
+              if (selected.holes.size) {
+                selected.holes.forEach(holeID => {
+                  let hole = state.getIn(['scene', 'layers', selectedLayer, 'holes', holeID]);
+                  elementsToClipboard.push(Map({
+                    elementType: 'holes',
+                    element: hole
+                  }));
+                });
+              }
+
+              if (elementsToClipboard.length > 0) {
+                store.dispatch(copyElements(List(elementsToClipboard)));
+              }
             }
-            else if (selected.areas.size) {
-              let area = state.getIn(['scene', 'layers', selectedLayer, 'areas', selected.areas.get(0)]);
-              store.dispatch(copyProperties(area.properties));
-            }
-            else if (selected.items.size) {
-              let item = state.getIn(['scene', 'layers', selectedLayer, 'items', selected.items.get(0)]);
-              store.dispatch(copyProperties(item.properties));
-            }
-            else if (selected.lines.size) {
-              let line = state.getIn(['scene', 'layers', selectedLayer, 'lines', selected.lines.get(0)]);
-              store.dispatch(copyProperties(line.properties));
+          } else {
+            // Original behavior for copying properties when Ctrl is not pressed
+            let selectedLayer = state.getIn(['scene', 'selectedLayer']);
+            let selected = state.getIn(['scene', 'layers', selectedLayer, 'selected']);
+
+            if ( ( mode === MODE_IDLE || mode === MODE_3D_VIEW ) && (selected.holes.size || selected.areas.size || selected.items.size || selected.lines.size)) {
+              if (selected.holes.size) {
+                let hole = state.getIn(['scene', 'layers', selectedLayer, 'holes', selected.holes.get(0)]);
+                store.dispatch(copyProperties(hole.get('properties')));
+              }
+              else if (selected.areas.size) {
+                let area = state.getIn(['scene', 'layers', selectedLayer, 'areas', selected.areas.get(0)]);
+                store.dispatch(copyProperties(area.properties));
+              }
+              else if (selected.items.size) {
+                let item = state.getIn(['scene', 'layers', selectedLayer, 'items', selected.items.get(0)]);
+                store.dispatch(copyProperties(item.properties));
+              }
+              else if (selected.lines.size) {
+                let line = state.getIn(['scene', 'layers', selectedLayer, 'lines', selected.lines.get(0)]);
+                store.dispatch(copyProperties(line.properties));
+              }
             }
           }
           break;
         }
         case KEYBOARD_BUTTON_CODE.V:
         {
-          store.dispatch(pasteProperties());
+          if (event.ctrlKey || event.metaKey) {
+            // Paste entire elements when Ctrl+V is pressed
+            store.dispatch(pasteElements());
+          } else {
+            // Original behavior for pasting properties when Ctrl is not pressed
+            store.dispatch(pasteProperties());
+          }
           break;
         }
         case KEYBOARD_BUTTON_CODE.CTRL:
