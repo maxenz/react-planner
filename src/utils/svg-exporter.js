@@ -490,6 +490,13 @@ export function exportToSvg(scene, width = 800, height = 600) {
       strokeWidth = "0";
       strokeDasharray = "";
       textLabel = item.properties.get("label") || "OFFICE";
+    } else if (item.type === "background-area") {
+      fillColor = item.properties.get("color") || "#e8f4f8";
+      fillOpacity = item.properties.get("opacity") || 0.3;
+      strokeColor = "none";
+      strokeWidth = "0";
+      strokeDasharray = "";
+      textLabel = ""; // No text for background areas
     } else if (item.type === "coffee-area") {
       fillColor = "#8db4d3";
       strokeColor = "#6b9dc4";

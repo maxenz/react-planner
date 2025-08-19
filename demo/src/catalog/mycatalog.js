@@ -16,6 +16,7 @@ import BathroomArea from "./items/bathroom-area/planner-element.jsx";
 import PhoneboothArea from "./items/phonebooth-area/planner-element.jsx";
 import BookableUnit from "./items/bookable-unit/planner-element.jsx";
 import Label from "./items/label/planner-element.jsx";
+import BackgroundArea from "./items/background-area/planner-element.jsx";
 
 for (let x in Areas) catalog.registerElement(Areas[x]);
 for (let x in Lines) catalog.registerElement(Lines[x]);
@@ -31,6 +32,7 @@ catalog.registerElement(BathroomArea);
 catalog.registerElement(PhoneboothArea);
 catalog.registerElement(BookableUnit);
 catalog.registerElement(Label);
+catalog.registerElement(BackgroundArea);
 
 catalog.registerCategory("windows", "Windows", [
   Holes.window,
