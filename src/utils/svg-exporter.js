@@ -203,8 +203,17 @@ export function exportToSvg(scene, width = 800, height = 600) {
     }
   });
 
-  // Render items (furniture)
-  selectedLayer.items.forEach((item, itemId) => {
+  // Sort items by z-index (bookable-unit should be on top)
+  const itemsArray = selectedLayer.items.entrySeq().toArray();
+  const sortedItems = itemsArray.sort(([idA, itemA], [idB, itemB]) => {
+    // Bookable units should render last (highest z-index)
+    if (itemA.type === "bookable-unit" && itemB.type !== "bookable-unit") return 1;
+    if (itemB.type === "bookable-unit" && itemA.type !== "bookable-unit") return -1;
+    return 0;
+  });
+
+  // Render items (furniture) in z-index order
+  sortedItems.forEach(([itemId, item]) => {
     const customId = item.properties.get("customId") || "";
     const elementId = customId || `item-${itemId}`;
 
@@ -234,9 +243,10 @@ export function exportToSvg(scene, width = 800, height = 600) {
         : item.properties.get("depth");
     }
 
-    // Simple rectangle positioning without complex transforms
+    // Calculate positioning and rotation
     const x = item.x - itemWidth / 2;
     const y = -item.y - itemHeight / 2; // Flip Y coordinate
+    const rotation = item.rotation || 0;
 
     // Handle special rendering for complex furniture items
     if (
@@ -516,6 +526,40 @@ export function exportToSvg(scene, width = 800, height = 600) {
       if (shape === "circular") {
         isCircular = true;
       }
+      
+      // For rectangular tables, render with proper rotation
+      if (!isCircular) {
+        const transform = rotation !== 0 ? `rotate(${-rotation} ${item.x} ${-item.y})` : "";
+        
+        svgElements.push(
+          <rect
+            key={`item-${itemId}`}
+            id={elementId}
+            x={x}
+            y={y}
+            width={itemWidth}
+            height={itemHeight}
+            fill={fillColor}
+            fillOpacity={fillOpacity}
+            stroke={strokeColor}
+            strokeWidth={strokeWidth}
+            transform={transform}
+            data-element-type="item"
+            data-element-id={itemId}
+            data-custom-id={customId}
+            data-item-type={item.type}
+          />
+        );
+
+        // Update bounds
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x + itemWidth);
+        maxY = Math.max(maxY, y + itemHeight);
+
+        // Skip the default rendering below
+        return;
+      }
     } else if (item.type === "label") {
       // Label is text-only, no background shape
       fillColor = "none";
@@ -635,7 +679,9 @@ export function exportToSvg(scene, width = 800, height = 600) {
       maxX = Math.max(maxX, item.x + radius);
       maxY = Math.max(maxY, -item.y + radius);
     } else {
-      // Render rectangular items
+      // Render rectangular items with rotation support
+      const transform = rotation !== 0 ? `rotate(${-rotation} ${item.x} ${-item.y})` : "";
+      
       svgElements.push(
         <rect
           key={`item-${itemId}`}
@@ -649,6 +695,7 @@ export function exportToSvg(scene, width = 800, height = 600) {
           stroke={strokeColor}
           strokeWidth={strokeWidth}
           strokeDasharray={strokeDasharray}
+          transform={transform}
           data-element-type="item"
           data-element-id={itemId}
           data-custom-id={customId}
