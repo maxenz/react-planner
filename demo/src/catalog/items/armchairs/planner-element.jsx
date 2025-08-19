@@ -1,19 +1,17 @@
-import * as Three from 'three';
-import React from 'react';
+import * as Three from "three";
+import React from "react";
 
 const WIDTH = 60;
 const DEPTH = 60;
 const HEIGHT = 100;
 
-let greyMaterial = new Three.MeshLambertMaterial({color: 0xC0C0C0});
+let greyMaterial = new Three.MeshLambertMaterial({ color: 0xc0c0c0 });
 greyMaterial.side = Three.DoubleSide;
-let greenMaterial = new Three.MeshLambertMaterial({color: 0x008250});
+let greenMaterial = new Three.MeshLambertMaterial({ color: 0x008250 });
 
-
-function makeArmchairMaxLOD()
-{
-  let armchair  = new Three.Object3D();
-  let foot     = new Three.Mesh();
+function makeArmchairMaxLOD() {
+  let armchair = new Three.Object3D();
+  let foot = new Three.Mesh();
 
   //armchair base
   let g_base_foot = new Three.BoxGeometry(0.3, 0.05, 0.4);
@@ -37,7 +35,7 @@ function makeArmchairMaxLOD()
     bevelSegments: 2,
     steps: 10,
     bevelSize: 1,
-    bevelThickness: 1
+    bevelThickness: 1,
   };
 
   let shape_sed = new Three.Shape();
@@ -53,7 +51,7 @@ function makeArmchairMaxLOD()
 
   sitting.rotation.y = Math.PI / 2;
   sitting.rotation.z = Math.PI / 3.5;
-  sitting.position.set(-0.325, .905, -0.3);
+  sitting.position.set(-0.325, 0.905, -0.3);
   seat.add(sitting);
 
   //back armchair
@@ -68,7 +66,7 @@ function makeArmchairMaxLOD()
   let g_back = new Three.ExtrudeGeometry(shape_sc, extrusionSettings);
   let back = new Three.Mesh(g_back, greenMaterial);
 
-  back.rotation.z = -105 * Math.PI / 180;
+  back.rotation.z = (-105 * Math.PI) / 180;
   back.rotation.y = -Math.PI / 2;
   back.position.set(0.325, 0.52, 0.125);
   seat.add(back);
@@ -84,8 +82,8 @@ function makeArmchairMaxLOD()
 
   let x = 0;
   let y = 0;
-  let width = .7;
-  let height = .75;
+  let width = 0.7;
+  let height = 0.75;
   let radius = 0.25;
 
   roundedRectShape.moveTo(x, y + radius);
@@ -99,30 +97,29 @@ function makeArmchairMaxLOD()
 
   let extrudeSettings = {
     steps: 2,
-    depth: .07,
+    depth: 0.07,
     bevelEnabled: false,
     bevelThickness: 1,
     bevelSize: 1,
-    bevelSegments: 1
+    bevelSegments: 1,
   };
 
   let geometry2 = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
   let armrest_1 = new Three.Mesh(geometry2, greyMaterial);
   armrest_1.rotation.y = Math.PI / 2;
-  armrest_1.rotation.z = .9 * Math.PI;
+  armrest_1.rotation.z = 0.9 * Math.PI;
   armrest_1.position.set(-0.4, 1, -0.4);
   seat.add(armrest_1);
 
   let armrest_2 = armrest_1.clone();
-  armrest_2.position.x += .73;
+  armrest_2.position.x += 0.73;
   seat.add(armrest_2);
   armchair.add(seat);
 
-  return armchair
+  return armchair;
 }
 
-function makeArmchairMinLOD()
-{
+function makeArmchairMinLOD() {
   let armchair = new Three.Object3D();
   let foot = new Three.Mesh();
 
@@ -148,7 +145,7 @@ function makeArmchairMinLOD()
     bevelSegments: 2,
     steps: 10,
     bevelSize: 1,
-    bevelThickness: 1
+    bevelThickness: 1,
   };
 
   let shape_sed = new Three.Shape();
@@ -164,7 +161,7 @@ function makeArmchairMinLOD()
 
   sitting.rotation.y = Math.PI / 2;
   sitting.rotation.z = Math.PI / 3.5;
-  sitting.position.set(-0.325, .905, -0.3);
+  sitting.position.set(-0.325, 0.905, -0.3);
   seat.add(sitting);
 
   //back armchair
@@ -179,7 +176,7 @@ function makeArmchairMinLOD()
   let g_back = new Three.ExtrudeGeometry(shape_sc, extrusionSettings);
   let back = new Three.Mesh(g_back, greenMaterial);
 
-  back.rotation.z = -105 * Math.PI / 180;
+  back.rotation.z = (-105 * Math.PI) / 180;
   back.rotation.y = -Math.PI / 2;
   back.position.set(0.325, 0.52, 0.125);
   seat.add(back);
@@ -195,8 +192,8 @@ function makeArmchairMinLOD()
 
   let x = 0;
   let y = 0;
-  let width = .7;
-  let height = .75;
+  let width = 0.7;
+  let height = 0.75;
   let radius = 0.25;
 
   roundedRectShape.moveTo(x, y + radius);
@@ -210,145 +207,159 @@ function makeArmchairMinLOD()
 
   let extrudeSettings = {
     steps: 2,
-    depth: .07,
+    depth: 0.07,
     bevelEnabled: false,
     bevelThickness: 1,
     bevelSize: 1,
-    bevelSegments: 1
+    bevelSegments: 1,
   };
 
   let geometry2 = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
   let armrest_1 = new Three.Mesh(geometry2, greyMaterial);
   armrest_1.rotation.y = Math.PI / 2;
-  armrest_1.rotation.z = .9 * Math.PI;
+  armrest_1.rotation.z = 0.9 * Math.PI;
   armrest_1.position.set(-0.4, 1, -0.4);
   seat.add(armrest_1);
 
   let armrest_2 = armrest_1.clone();
-  armrest_2.position.x += .73;
+  armrest_2.position.x += 0.73;
   seat.add(armrest_2);
   armchair.add(seat);
 
-  return armchair
+  return armchair;
 }
 
 export default {
-  name: 'armchairs',
-  prototype: 'items',
+  name: "armchairs",
+  prototype: "items",
 
   info: {
-    tag: ['furnishings', 'wood'],
-    title: 'armchairs',
-    description: 'armchairs',
-    image: require('./armchairs.png')
+    tag: ["furnishings", "wood"],
+    title: "armchairs",
+    description: "armchairs",
+    image: require("./armchairs.png"),
   },
 
   properties: {
     altitude: {
-      label: 'altitude',
-      type: 'length-measure',
+      label: "altitude",
+      type: "length-measure",
       defaultValue: {
         length: 0,
-        unit: 'cm'
-      }
+        unit: "cm",
+      },
     },
     seat: {
-      label: 'seats',
-      type: 'number',
-      defaultValue: 1
+      label: "seats",
+      type: "number",
+      defaultValue: 1,
     },
     flip: {
-      label: 'flip',
-      type: 'checkbox',
+      label: "flip",
+      type: "checkbox",
       defaultValue: false,
       values: {
-        'none': false,
-        'yes':  true
-      }
-    }
+        none: false,
+        yes: true,
+      },
+    },
   },
 
   render2D: function (element, layer, scene) {
-
-    let rect_style ={stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce'};
-    let text_style ={textAnchor: 'middle', fontSize: '11px', fill: '#FF0000'};
+    let rect_style = {
+      stroke: element.selected ? "#0096fd" : "#000",
+      strokeWidth: "2px",
+      fill: "#EEF3F9",
+    };
+    let text_style = {
+      textAnchor: "middle",
+      fontSize: "11px",
+      fill: "#FF0000",
+    };
 
     let angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
-    let seats = element.properties.get('seat');
-    let flip = element.properties.get('flip');
+    let seats = element.properties.get("seat");
+    let flip = element.properties.get("flip");
 
     let seatsArray = new Array(seats);
 
     let eps = -1.7;
 
     for (let ind = 0; ind < seats; ind++)
-      seatsArray[ind]=<rect key={ind} x={WIDTH * ind} y={eps * ind }
-                            width={WIDTH} height={DEPTH} style={rect_style}/>
+      seatsArray[ind] = (
+        <rect
+          key={ind}
+          x={WIDTH * ind}
+          y={eps * ind}
+          width={WIDTH}
+          height={DEPTH}
+          style={rect_style}
+        />
+      );
 
     return (
-      <g transform={`translate(${(flip?-1:1) * WIDTH * seats/2},${-DEPTH / 2}) scale(${flip?1:-1},1)`}>
+      <g
+        transform={`translate(${((flip ? -1 : 1) * WIDTH * seats) / 2},${
+          -DEPTH / 2
+        }) scale(${flip ? 1 : -1},1)`}
+      >
         {seatsArray}
-        <text x='0' y='0'
-              transform={`translate(${WIDTH * seats/2}, ${DEPTH / 2 + eps * seats/2}) scale(${flip?1:-1},-1) rotate(${textRotation})`}
-              style={text_style}>
+        <text
+          x="0"
+          y="0"
+          transform={`translate(${(WIDTH * seats) / 2}, ${
+            DEPTH / 2 + (eps * seats) / 2
+          }) scale(${flip ? 1 : -1},-1) rotate(${textRotation})`}
+          style={text_style}
+        >
           {element.type}
         </text>
       </g>
     );
-
   },
 
   render3D: function (element, layer, scene) {
-
-    let newAltitude = element.properties.get('altitude').get('length');
-    let seats = element.properties.get('seat');
-    let flip = element.properties.get('flip');
+    let newAltitude = element.properties.get("altitude").get("length");
+    let seats = element.properties.get("seat");
+    let flip = element.properties.get("flip");
     let newWidth = WIDTH;
     let newDepth = DEPTH;
 
     let armchairsMaxLOD = new Three.Object3D();
     let seatArray = new Array(seats);
 
-      function setArmchairsPos(listObject,seats) {
+    function setArmchairsPos(listObject, seats) {
+      newWidth = WIDTH * seats;
+      newDepth = DEPTH + ((DEPTH / 8) * seats) / 2;
+      seatArray = listObject;
 
-        newWidth = WIDTH * seats;
-        newDepth = DEPTH + (DEPTH / 8 * seats / 2);
-        seatArray = listObject;
+      for (let ind = 0; ind < seats; ind++) {
+        seatArray[ind].position.x = (ind - Math.floor(seats / 2)) * -0.8;
 
-        for (let ind = 0; ind < seats; ind++) {
-
-          seatArray[ind].position.x = (ind - Math.floor(seats / 2)) * -.8;
-
-          if(flip)
-          seatArray[ind].position.z = (ind - Math.floor(seats / 2)) * -.085;
-          else
-          seatArray[ind].position.z = (ind - Math.floor(seats / 2)) * +.085;
-
-        }
-
+        if (flip)
+          seatArray[ind].position.z = (ind - Math.floor(seats / 2)) * -0.085;
+        else seatArray[ind].position.z = (ind - Math.floor(seats / 2)) * +0.085;
       }
+    }
 
     function makeSeriesArmchair2(seats) {
-
       let chair = makeArmchairMaxLOD().clone();
-      for (let ind = 0; ind < seats; ind++)
-        seatArray[ind] = chair.clone();
+      for (let ind = 0; ind < seats; ind++) seatArray[ind] = chair.clone();
 
-      return seatArray
-
+      return seatArray;
     }
 
     let armchairsObject2 = makeSeriesArmchair2(seats);
-      setArmchairsPos(armchairsObject2,seats);
+    setArmchairsPos(armchairsObject2, seats);
 
-    for(let i=0; i<armchairsObject2.length; i++)
-    armchairsMaxLOD.add(armchairsObject2[i]);
+    for (let i = 0; i < armchairsObject2.length; i++)
+      armchairsMaxLOD.add(armchairsObject2[i]);
 
     let valueObject = new Three.Box3().setFromObject(armchairsMaxLOD);
 
@@ -356,38 +367,45 @@ export default {
     let deltaY = Math.abs(valueObject.max.y - valueObject.min.y);
     let deltaZ = Math.abs(valueObject.max.z - valueObject.min.z);
 
-    armchairsMaxLOD.position.y+= -HEIGHT/20 + newAltitude;
-    seats%2 ? armchairsMaxLOD.position.x+= newWidth/seats - WIDTH : armchairsMaxLOD.position.x+= newWidth/seats - 1.5*WIDTH ;
-    armchairsMaxLOD.position.z-= DEPTH/8;
-    armchairsMaxLOD.scale.set(newWidth / deltaX, HEIGHT / deltaY, newDepth / deltaZ);
-
+    armchairsMaxLOD.position.y += -HEIGHT / 20 + newAltitude;
+    seats % 2
+      ? (armchairsMaxLOD.position.x += newWidth / seats - WIDTH)
+      : (armchairsMaxLOD.position.x += newWidth / seats - 1.5 * WIDTH);
+    armchairsMaxLOD.position.z -= DEPTH / 8;
+    armchairsMaxLOD.scale.set(
+      newWidth / deltaX,
+      HEIGHT / deltaY,
+      newDepth / deltaZ
+    );
 
     /********************** lod min ************************************/
 
     let armchairsMinLOD = new Three.Object3D();
 
     function makeSeriesArmchair1(seats) {
-
       let chair = makeArmchairMinLOD().clone();
 
-      for (let ind = 0; ind < seats; ind++)
-        seatArray[ind] = chair.clone();
+      for (let ind = 0; ind < seats; ind++) seatArray[ind] = chair.clone();
 
-      return seatArray
-
+      return seatArray;
     }
 
     let armchairsObject1 = makeSeriesArmchair1(seats);
-    setArmchairsPos(armchairsObject1,seats);
+    setArmchairsPos(armchairsObject1, seats);
 
-    for(let j=0; j<armchairsObject1.length; j++)
+    for (let j = 0; j < armchairsObject1.length; j++)
       armchairsMinLOD.add(armchairsObject1[j]);
 
-    armchairsMinLOD.position.y+= -HEIGHT/20 + newAltitude;
-    seats%2 ? armchairsMinLOD.position.x+= newWidth/seats - WIDTH : armchairsMinLOD.position.x+= (newWidth)/seats - 1.5*WIDTH ;
-    armchairsMinLOD.position.z-= DEPTH/8;
-    armchairsMinLOD.scale.set(newWidth / deltaX, HEIGHT / deltaY, newDepth / deltaZ);
-
+    armchairsMinLOD.position.y += -HEIGHT / 20 + newAltitude;
+    seats % 2
+      ? (armchairsMinLOD.position.x += newWidth / seats - WIDTH)
+      : (armchairsMinLOD.position.x += newWidth / seats - 1.5 * WIDTH);
+    armchairsMinLOD.position.z -= DEPTH / 8;
+    armchairsMinLOD.scale.set(
+      newWidth / deltaX,
+      HEIGHT / deltaY,
+      newDepth / deltaZ
+    );
 
     /********* all level of detail ************/
 
@@ -407,8 +425,5 @@ export default {
     }
 
     return Promise.resolve(lod);
-  }
-
+  },
 };
-
-

@@ -1,7 +1,7 @@
-import * as Three from 'three';
+import * as Three from "three";
 
-import React from 'react';
-import convert from 'convert-units';
+import React from "react";
+import convert from "convert-units";
 
 export default {
   name: "simple-stair",
@@ -9,9 +9,9 @@ export default {
 
   info: {
     title: "simple stair",
-    tag: ['building', 'stair'],
+    tag: ["building", "stair"],
     description: "Simple stair",
-    image: require('./simple-stair.png')
+    image: require("./simple-stair.png"),
   },
 
   properties: {
@@ -20,89 +20,128 @@ export default {
       type: "length-measure",
       defaultValue: {
         length: 50,
-        unit: 'cm'
-      }
+        unit: "cm",
+      },
     },
     depth: {
       label: "Depth",
       type: "length-measure",
       defaultValue: {
         length: 300,
-        unit: 'cm'
-      }
+        unit: "cm",
+      },
     },
     height: {
       label: "Height",
       type: "length-measure",
       defaultValue: {
         length: 300,
-        unit: 'cm'
-      }
+        unit: "cm",
+      },
     },
     altitude: {
       label: "Altitude",
       type: "length-measure",
       defaultValue: {
         length: 0,
-        unit: 'cm'
-      }
-    }
+        unit: "cm",
+      },
+    },
   },
 
   render2D: function (element, layer, scene) {
-
-    let newWidth = convert(element.properties.get('width').get('length'))
-      .from(element.properties.get('width').get('unit'))
+    let newWidth = convert(element.properties.get("width").get("length"))
+      .from(element.properties.get("width").get("unit"))
       .to(scene.unit);
 
-    let newDepth = convert(element.properties.get('depth').get('length'))
-      .from(element.properties.get('depth').get('unit'))
+    let newDepth = convert(element.properties.get("depth").get("length"))
+      .from(element.properties.get("depth").get("unit"))
       .to(scene.unit);
 
     let angle = element.rotation + 90;
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
-    let style = {stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#84e1ce"};
-    let arrow_style = {stroke: element.selected ? '#0096fd' : null, strokeWidth: "2px", fill: "#84e1ce"};
+    let style = {
+      stroke: element.selected ? "#0096fd" : "#000",
+      strokeWidth: "2px",
+      fill: "#EEF3F9",
+    };
+    let arrow_style = {
+      stroke: element.selected ? "#0096fd" : null,
+      strokeWidth: "2px",
+      fill: "#EEF3F9",
+    };
 
     return (
       <g transform={`translate(${-newWidth / 2},${-newDepth / 2})`}>
-        <rect key="1" x="0" y="0" width={newWidth} height={newDepth} style={style}/>
-        <line key="2" x1={newWidth / 2} x2={newWidth / 2} y1={newDepth} y2={newDepth + 30} style={arrow_style}/>
-        <line key="3" x1={.35 * newWidth} x2={newWidth / 2} y1={newDepth + 15} y2={newDepth + 30} style={arrow_style}/>
-        <line key="4" x1={newWidth / 2} x2={.65 * newWidth} y1={newDepth + 30} y2={newDepth + 15} style={arrow_style}/>
-        <text key="5" x="0" y="0"
-              transform={`translate(${newWidth / 2}, ${newDepth / 2}) scale(1,-1) rotate(${textRotation})`}
-              style={{textAnchor: "middle", fontSize: "11px"}}>
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={newWidth}
+          height={newDepth}
+          style={style}
+        />
+        <line
+          key="2"
+          x1={newWidth / 2}
+          x2={newWidth / 2}
+          y1={newDepth}
+          y2={newDepth + 30}
+          style={arrow_style}
+        />
+        <line
+          key="3"
+          x1={0.35 * newWidth}
+          x2={newWidth / 2}
+          y1={newDepth + 15}
+          y2={newDepth + 30}
+          style={arrow_style}
+        />
+        <line
+          key="4"
+          x1={newWidth / 2}
+          x2={0.65 * newWidth}
+          y1={newDepth + 30}
+          y2={newDepth + 15}
+          style={arrow_style}
+        />
+        <text
+          key="5"
+          x="0"
+          y="0"
+          transform={`translate(${newWidth / 2}, ${
+            newDepth / 2
+          }) scale(1,-1) rotate(${textRotation})`}
+          style={{ textAnchor: "middle", fontSize: "11px" }}
+        >
           {element.type}
         </text>
       </g>
     );
-
   },
 
   render3D: function (element, layer, scene) {
-
     let loader = new Three.TextureLoader();
     let whitePaintTextureRepeatFactor = 1 / 20; // In a 100x100 area i want to repeat this texture 5x5 times
 
-    let newWidth = convert(element.properties.get('width').get('length'))
-      .from(element.properties.get('width').get('unit'))
+    let newWidth = convert(element.properties.get("width").get("length"))
+      .from(element.properties.get("width").get("unit"))
       .to(scene.unit);
 
-    let newDepth = convert(element.properties.get('depth').get('length'))
-      .from(element.properties.get('depth').get('unit'))
+    let newDepth = convert(element.properties.get("depth").get("length"))
+      .from(element.properties.get("depth").get("unit"))
       .to(scene.unit);
 
-    let newHeight = convert(element.properties.get('height').get('length'))
-      .from(element.properties.get('height').get('unit'))
+    let newHeight = convert(element.properties.get("height").get("length"))
+      .from(element.properties.get("height").get("unit"))
       .to(scene.unit);
 
-    let newAltitude = convert(element.properties.get('altitude').get('length'))
-      .from(element.properties.get('altitude').get('unit'))
+    let newAltitude = convert(element.properties.get("altitude").get("length"))
+      .from(element.properties.get("altitude").get("unit"))
       .to(scene.unit);
 
     let stair = new Three.Object3D();
@@ -119,19 +158,26 @@ export default {
     // Build planes for every step
     let stepPlaneGeometry = new Three.PlaneGeometry(stepWidth, stepHeight);
     assignUVs(stepPlaneGeometry);
-    let stepPlaneMaterial = new Three.MeshBasicMaterial({side: Three.FrontSide});
-    stepPlaneMaterial.map = loader.load(require('./textures/white-paint.jpg'));
+    let stepPlaneMaterial = new Three.MeshBasicMaterial({
+      side: Three.FrontSide,
+    });
+    stepPlaneMaterial.map = loader.load(require("./textures/white-paint.jpg"));
     stepPlaneMaterial.needsUpdate = true;
     stepPlaneMaterial.map.wrapS = Three.RepeatWrapping;
     stepPlaneMaterial.map.wrapT = Three.RepeatWrapping;
-    stepPlaneMaterial.map.repeat.set(stepWidth * whitePaintTextureRepeatFactor, stepHeight * whitePaintTextureRepeatFactor);
+    stepPlaneMaterial.map.repeat.set(
+      stepWidth * whitePaintTextureRepeatFactor,
+      stepHeight * whitePaintTextureRepeatFactor
+    );
 
     // Build stair profile shape
     let starProfileShapePoints = [];
 
     for (let i = 0; i < numberOfSteps; i++) {
-      starProfileShapePoints.push([(numberOfSteps - i) * stepDepth, i * stepHeight],
-        [(numberOfSteps - i) * stepDepth, (i + 1) * stepHeight]);
+      starProfileShapePoints.push(
+        [(numberOfSteps - i) * stepDepth, i * stepHeight],
+        [(numberOfSteps - i) * stepDepth, (i + 1) * stepHeight]
+      );
 
       let stepPlane = new Three.Mesh(stepPlaneGeometry, stepPlaneMaterial);
       stepPlane.position.x += stepWidth / 2;
@@ -146,43 +192,69 @@ export default {
       stair.add(stepCover);
     }
 
-    starProfileShapePoints.push([0, numberOfSteps * stepHeight],
+    starProfileShapePoints.push(
+      [0, numberOfSteps * stepHeight],
       [0, (numberOfSteps - 1) * stepHeight],
-      [(numberOfSteps - 1) * stepDepth, 0]);
+      [(numberOfSteps - 1) * stepDepth, 0]
+    );
 
     let stairShapeProfile = new Three.Shape();
-    stairShapeProfile.moveTo(starProfileShapePoints[0][0], starProfileShapePoints[0][1]);
+    stairShapeProfile.moveTo(
+      starProfileShapePoints[0][0],
+      starProfileShapePoints[0][1]
+    );
     for (let i = 1; i < starProfileShapePoints.length; i++) {
-      stairShapeProfile.lineTo(starProfileShapePoints[i][0], starProfileShapePoints[i][1]);
+      stairShapeProfile.lineTo(
+        starProfileShapePoints[i][0],
+        starProfileShapePoints[i][1]
+      );
     }
 
     let stairShapeProfileGeometry = new Three.ShapeGeometry(stairShapeProfile);
     assignUVs(stairShapeProfileGeometry);
-    let stairProfileMaterial = new Three.MeshPhongMaterial({side: Three.FrontSide});
+    let stairProfileMaterial = new Three.MeshPhongMaterial({
+      side: Three.FrontSide,
+    });
 
-    stairProfileMaterial.map = loader.load(require('./textures/white-paint.jpg'));
+    stairProfileMaterial.map = loader.load(
+      require("./textures/white-paint.jpg")
+    );
     stairProfileMaterial.needsUpdate = true;
     stairProfileMaterial.map.wrapS = Three.RepeatWrapping;
     stairProfileMaterial.map.wrapT = Three.RepeatWrapping;
-    stairProfileMaterial.map.repeat.set(numberOfSteps * stepDepth * whitePaintTextureRepeatFactor,
-      numberOfSteps * stepHeight * whitePaintTextureRepeatFactor);
+    stairProfileMaterial.map.repeat.set(
+      numberOfSteps * stepDepth * whitePaintTextureRepeatFactor,
+      numberOfSteps * stepHeight * whitePaintTextureRepeatFactor
+    );
 
-    let stairProfile = new Three.Mesh(stairShapeProfileGeometry, stairProfileMaterial);
+    let stairProfile = new Three.Mesh(
+      stairShapeProfileGeometry,
+      stairProfileMaterial
+    );
 
     stairProfile.rotation.y = -Math.PI / 2;
 
     stair.add(stairProfile);
 
-    let stairProfileMaterial2 = new Three.MeshPhongMaterial({side: Three.BackSide});
+    let stairProfileMaterial2 = new Three.MeshPhongMaterial({
+      side: Three.BackSide,
+    });
 
-    stairProfileMaterial2.map = loader.load(require('./textures/white-paint.jpg'));
+    stairProfileMaterial2.map = loader.load(
+      require("./textures/white-paint.jpg")
+    );
     stairProfileMaterial2.needsUpdate = true;
     stairProfileMaterial2.map.wrapS = Three.RepeatWrapping;
     stairProfileMaterial2.map.wrapT = Three.RepeatWrapping;
-    stairProfileMaterial2.map.repeat.set(numberOfSteps * stepDepth * whitePaintTextureRepeatFactor,
-      numberOfSteps * stepHeight * whitePaintTextureRepeatFactor);
+    stairProfileMaterial2.map.repeat.set(
+      numberOfSteps * stepDepth * whitePaintTextureRepeatFactor,
+      numberOfSteps * stepHeight * whitePaintTextureRepeatFactor
+    );
 
-    let stairProfile2 = new Three.Mesh(stairShapeProfileGeometry, stairProfileMaterial2);
+    let stairProfile2 = new Three.Mesh(
+      stairShapeProfileGeometry,
+      stairProfileMaterial2
+    );
 
     stairProfile2.rotation.y = -Math.PI / 2;
     stairProfile2.position.x += newWidth;
@@ -194,16 +266,24 @@ export default {
     /*** CLOSURE 1 ***/
     let closure1Slope = -Math.atan(stepDepth / stepHeight);
     let stairClosure1Width = newWidth;
-    let stairClosure1Height = (numberOfSteps - 1) * stepHeight / Math.cos(closure1Slope);
-    let stairClosure1Geometry = new Three.PlaneGeometry(stairClosure1Width, stairClosure1Height);
+    let stairClosure1Height =
+      ((numberOfSteps - 1) * stepHeight) / Math.cos(closure1Slope);
+    let stairClosure1Geometry = new Three.PlaneGeometry(
+      stairClosure1Width,
+      stairClosure1Height
+    );
 
-    let closure1Material = new Three.MeshPhongMaterial({side: Three.BackSide});
-    closure1Material.map = loader.load(require('./textures/white-paint.jpg'));
+    let closure1Material = new Three.MeshPhongMaterial({
+      side: Three.BackSide,
+    });
+    closure1Material.map = loader.load(require("./textures/white-paint.jpg"));
     closure1Material.needsUpdate = true;
     closure1Material.map.wrapS = Three.RepeatWrapping;
     closure1Material.map.wrapT = Three.RepeatWrapping;
-    closure1Material.map.repeat.set(stairClosure1Width * whitePaintTextureRepeatFactor,
-      stairClosure1Height * whitePaintTextureRepeatFactor);
+    closure1Material.map.repeat.set(
+      stairClosure1Width * whitePaintTextureRepeatFactor,
+      stairClosure1Height * whitePaintTextureRepeatFactor
+    );
     let stairClosure1 = new Three.Mesh(stairClosure1Geometry, closure1Material);
     let pivotClosure1 = new Three.Object3D();
     stairClosure1.position.y += stairClosure1Height / 2;
@@ -248,22 +328,24 @@ export default {
     let center = [
       (boundingBox.max.x - boundingBox.min.x) / 2 + boundingBox.min.x,
       (boundingBox.max.y - boundingBox.min.y) / 2 + boundingBox.min.y,
-      (boundingBox.max.z - boundingBox.min.z) / 2 + boundingBox.min.z];
+      (boundingBox.max.z - boundingBox.min.z) / 2 + boundingBox.min.z,
+    ];
 
     stair.position.x -= center[0];
     stair.position.y -= center[1] - (boundingBox.max.y - boundingBox.min.y) / 2;
     stair.position.z -= center[2];
 
     // I re-scale the stair following the initial attributes
-    stair.scale.set(newWidth / (boundingBox.max.x - boundingBox.min.x),
+    stair.scale.set(
+      newWidth / (boundingBox.max.x - boundingBox.min.x),
       newHeight / (boundingBox.max.y - boundingBox.min.y),
-      newDepth / (boundingBox.max.z - boundingBox.min.z));
+      newDepth / (boundingBox.max.z - boundingBox.min.z)
+    );
 
     stair.position.y += newAltitude;
 
     return Promise.resolve(stair);
-  }
-
+  },
 };
 
 function assignUVs(geometry) {
@@ -279,39 +361,55 @@ function assignUVs(geometry) {
   let faces = geometry.faces;
 
   for (let i = 0; i < geometry.faces.length; i++) {
-
     let v1 = geometry.vertices[faces[i].a];
     let v2 = geometry.vertices[faces[i].b];
     let v3 = geometry.vertices[faces[i].c];
 
     geometry.faceVertexUvs[0].push([
-      new Three.Vector2(( v1.x + offset.x ) / range.x, ( v1.y + offset.y ) / range.y),
-      new Three.Vector2(( v2.x + offset.x ) / range.x, ( v2.y + offset.y ) / range.y),
-      new Three.Vector2(( v3.x + offset.x ) / range.x, ( v3.y + offset.y ) / range.y)
+      new Three.Vector2(
+        (v1.x + offset.x) / range.x,
+        (v1.y + offset.y) / range.y
+      ),
+      new Three.Vector2(
+        (v2.x + offset.x) / range.x,
+        (v2.y + offset.y) / range.y
+      ),
+      new Three.Vector2(
+        (v3.x + offset.x) / range.x,
+        (v3.y + offset.y) / range.y
+      ),
     ]);
   }
   geometry.uvsNeedUpdate = true;
 }
 
 let buildStepCover = (width, height, depth) => {
-
   let loader = new Three.TextureLoader();
 
   let stepCoverHeight = 2;
 
   let stepCoverLength = 2;
 
-  let planeGeometry = new Three.PlaneGeometry(width + stepCoverLength * 2, depth + stepCoverHeight);
-  let planeMaterial = new Three.MeshBasicMaterial({side: Three.FrontSide});
+  let planeGeometry = new Three.PlaneGeometry(
+    width + stepCoverLength * 2,
+    depth + stepCoverHeight
+  );
+  let planeMaterial = new Three.MeshBasicMaterial({ side: Three.FrontSide });
   assignUVs(planeGeometry);
 
-  let planeGeometry2 = new Three.PlaneGeometry(depth + stepCoverLength, stepCoverHeight);
+  let planeGeometry2 = new Three.PlaneGeometry(
+    depth + stepCoverLength,
+    stepCoverHeight
+  );
   assignUVs(planeGeometry2);
 
-  let planeGeometry3 = new Three.PlaneGeometry(width + stepCoverLength * 2, stepCoverHeight);
+  let planeGeometry3 = new Three.PlaneGeometry(
+    width + stepCoverLength * 2,
+    stepCoverHeight
+  );
   assignUVs(planeGeometry3);
 
-  planeMaterial.map = loader.load(require('./textures/marble.jpg'));
+  planeMaterial.map = loader.load(require("./textures/marble.jpg"));
   planeMaterial.needsUpdate = true;
   planeMaterial.map.wrapS = Three.RepeatWrapping;
   planeMaterial.map.wrapT = Three.RepeatWrapping;

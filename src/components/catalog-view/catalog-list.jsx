@@ -114,9 +114,12 @@ export default class CatalogList extends Component {
 
     if( text != '' ) {
       let regexp = new RegExp( text, 'i');
+      // Create a Set to track unique element names and prevent duplicates
+      let seenNames = new Set();
       for (let i = 0; i < array.length; i++) {
-        if (regexp.test(array[i].info.title)) {
+        if (regexp.test(array[i].info.title) && !seenNames.has(array[i].name)) {
           filtered.push(array[i]);
+          seenNames.add(array[i].name);
         }
       }
     }

@@ -1,19 +1,22 @@
-import * as Three from 'three';
-import React from 'react';
+import * as Three from "three";
+import React from "react";
 
-const WIDTH   = 50;
-const DEPTH   = 50;
-const HEIGHT  = 180;
+const WIDTH = 50;
+const DEPTH = 50;
+const HEIGHT = 180;
 
-const blackMaterial = new Three.MeshLambertMaterial({color: 0x4B4B4B});
-const greyMaterial  = new Three.MeshLambertMaterial({color: 0xC0C0C0});
-const blueMaterial  = new Three.MeshLambertMaterial({color: 0x3399FF, transparent: true, opacity: 0.8});
+const blackMaterial = new Three.MeshLambertMaterial({ color: 0x4b4b4b });
+const greyMaterial = new Three.MeshLambertMaterial({ color: 0xc0c0c0 });
+const blueMaterial = new Three.MeshLambertMaterial({
+  color: 0x3399ff,
+  transparent: true,
+  opacity: 0.8,
+});
 
 const objectMaxLOD = makeObjectMaxLOD();
 const objectMinLOD = makeObjectMinLOD();
 
 function makeObjectMaxLOD() {
-
   let hanger = new Three.Mesh();
 
   //base
@@ -24,7 +27,7 @@ function makeObjectMaxLOD() {
 
   let base2_geom = new Three.CylinderGeometry(0.09, 0.01, 0.03, 20, 2, true);
   let base2 = new Three.Mesh(base2_geom, blackMaterial);
-  base2.position.set(0, 0.015+0.05, 0);
+  base2.position.set(0, 0.015 + 0.05, 0);
 
   //central body
   let body_geom = new Three.CylinderGeometry(0.03, 0.03, 2, 32, 32);
@@ -35,7 +38,7 @@ function makeObjectMaxLOD() {
   let g_umbrella_base = new Three.TorusGeometry(0.045, 0.02, 32, 32);
 
   let umbrella_base = new Three.Mesh(g_umbrella_base, blueMaterial);
-  umbrella_base.rotation.x = Math.PI/2;
+  umbrella_base.rotation.x = Math.PI / 2;
   umbrella_base.position.set(0, 0.7, 0);
 
   let g_umbrella = new Three.TorusGeometry(0.06, 0.015, 32, 32);
@@ -43,7 +46,7 @@ function makeObjectMaxLOD() {
 
   for (let i = 0; i < 4; i++) {
     umbrella[i] = new Three.Mesh(g_umbrella, blueMaterial);
-    umbrella[i].rotation.x = Math.PI/2;
+    umbrella[i].rotation.x = Math.PI / 2;
     umbrella[i].position.y = 0.7;
   }
 
@@ -61,7 +64,7 @@ function makeObjectMaxLOD() {
 
   for (let i = 0; i < 8; i++) {
     hooks[i] = new Three.Object3D();
-    hooks[i].rotation.x = Math.PI/2;
+    hooks[i].rotation.x = Math.PI / 2;
     hooks[i].position.set(0, 1.7, 0);
 
     let hook_body = new Three.Mesh(g_hook_body, greyMaterial);
@@ -71,11 +74,10 @@ function makeObjectMaxLOD() {
     hook_body.add(hook);
     hook.position.y = 0.085;
 
-    hooks[i].rotation.z = 45 * i * Math.PI/180;
+    hooks[i].rotation.z = (45 * i * Math.PI) / 180;
     hook_body.position.y = 0.115;
 
-    if ((i % 2) === 1)
-      hooks[i].position.y += 0.2;
+    if (i % 2 === 1) hooks[i].position.y += 0.2;
   }
 
   hanger.add(base);
@@ -95,7 +97,6 @@ function makeObjectMaxLOD() {
 }
 
 function makeObjectMinLOD() {
-
   let hanger = new Three.Mesh();
 
   //base
@@ -106,7 +107,7 @@ function makeObjectMinLOD() {
 
   let base2_geom = new Three.CylinderGeometry(0.09, 0.01, 0.03, 20, 2, true);
   let base2 = new Three.Mesh(base2_geom, blackMaterial);
-  base2.position.set(0, 0.015+0.05, 0);
+  base2.position.set(0, 0.015 + 0.05, 0);
 
   //central body
   let body_geom = new Three.CylinderGeometry(0.03, 0.03, 2, 8, 8);
@@ -116,12 +117,12 @@ function makeObjectMinLOD() {
   //umbrella support
   let g_umbrella_base = new Three.TorusGeometry(0.045, 0.02, 8, 8);
   let m_umbrella = new Three.MeshLambertMaterial({
-    color: 0x3399FF,
+    color: 0x3399ff,
     transparent: true,
-    opacity: 0.8
+    opacity: 0.8,
   });
   let umbrella_base = new Three.Mesh(g_umbrella_base, m_umbrella);
-  umbrella_base.rotation.x = Math.PI/2;
+  umbrella_base.rotation.x = Math.PI / 2;
   umbrella_base.position.set(0, 0.7, 0);
 
   let g_umbrella = new Three.TorusGeometry(0.06, 0.015, 8, 8);
@@ -129,7 +130,7 @@ function makeObjectMinLOD() {
 
   for (let i = 0; i < 4; i++) {
     umbrella[i] = new Three.Mesh(g_umbrella, m_umbrella);
-    umbrella[i].rotation.x = Math.PI/2;
+    umbrella[i].rotation.x = Math.PI / 2;
     umbrella[i].position.y = 0.7;
   }
 
@@ -147,7 +148,7 @@ function makeObjectMinLOD() {
 
   for (let i = 0; i < 8; i++) {
     hooks[i] = new Three.Object3D();
-    hooks[i].rotation.x = Math.PI/2;
+    hooks[i].rotation.x = Math.PI / 2;
     hooks[i].position.set(0, 1.7, 0);
 
     let hook_body = new Three.Mesh(g_hook_body, greyMaterial);
@@ -157,11 +158,10 @@ function makeObjectMinLOD() {
     hook_body.add(hook);
     hook.position.y = 0.085;
 
-    hooks[i].rotation.z = 45 * i * Math.PI/180;
+    hooks[i].rotation.z = (45 * i * Math.PI) / 180;
     hook_body.position.y = 0.115;
 
-    if (i % 2 === 1)
-      hooks[i].position.y += 0.2;
+    if (i % 2 === 1) hooks[i].position.y += 0.2;
   }
 
   hanger.add(base);
@@ -185,10 +185,10 @@ export default {
   prototype: "items",
 
   info: {
-    tag: ['furnishings', 'metallo','plastic'],
+    tag: ["furnishings", "metallo", "plastic"],
     title: "hanger",
     description: "hanger",
-    image: require('./hanger.png')
+    image: require("./hanger.png"),
   },
 
   properties: {
@@ -197,36 +197,50 @@ export default {
       type: "length-measure",
       defaultValue: {
         length: 0,
-        unit: 'cm'
-      }
-    }
+        unit: "cm",
+      },
+    },
   },
 
   render2D: function (element, layer, scene) {
-
     let angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-      <rect key="1" x="0" y="0" width={WIDTH} height={DEPTH}
-        style={{stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#84e1ce"}}/>
-      <text key="2" x="0" y="0"
-            transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-        style={{textAnchor: "middle", fontSize: "11px"}}>
-        {element.type}
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? "#0096fd" : "#000",
+            strokeWidth: "2px",
+            fill: "#EEF3F9",
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
+          transform={`translate(${WIDTH / 2}, ${
+            DEPTH / 2
+          }) scale(1,-1) rotate(${textRotation})`}
+          style={{ textAnchor: "middle", fontSize: "11px" }}
+        >
+          {element.type}
         </text>
-        </g>
-    )
+      </g>
+    );
   },
 
   render3D: function (element, layer, scene) {
-
-    let newAltitude = element.properties.get('altitude').get('length');
+    let newAltitude = element.properties.get("altitude").get("length");
 
     /************* lod max ******************/
     let hangerMaxLOD = new Three.Object3D();
@@ -238,13 +252,13 @@ export default {
     let deltaY = Math.abs(aa.max.y - aa.min.y);
     let deltaZ = Math.abs(aa.max.z - aa.min.z);
 
-    hangerMaxLOD.position.y+= newAltitude;
+    hangerMaxLOD.position.y += newAltitude;
     hangerMaxLOD.scale.set(WIDTH / deltaX, HEIGHT / deltaY, DEPTH / deltaZ);
 
     /************* lod min ******************/
     let hangerMinLOD = new Three.Object3D();
     hangerMinLOD.add(objectMinLOD.clone());
-    hangerMinLOD.position.y+= newAltitude;
+    hangerMinLOD.position.y += newAltitude;
     hangerMinLOD.scale.set(WIDTH / deltaX, HEIGHT / deltaY, DEPTH / deltaZ);
 
     /**** all level of detail ***/
@@ -265,7 +279,5 @@ export default {
     }
 
     return Promise.resolve(lod);
-  }
-
+  },
 };
-
