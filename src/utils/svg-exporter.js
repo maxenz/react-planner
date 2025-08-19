@@ -504,6 +504,18 @@ export function exportToSvg(scene, width = 800, height = 600) {
       fillOpacity = "1";
       textLabel = "";
       isCircular = true;
+    } else if (item.type === "table") {
+      fillColor = "white";
+      strokeColor = "#000000";
+      strokeWidth = "2";
+      fillOpacity = "1";
+      textLabel = "";
+      
+      // Check if it's a circular table
+      const shape = item.properties && item.properties.get ? item.properties.get("shape") : "rectangular";
+      if (shape === "circular") {
+        isCircular = true;
+      }
     } else if (item.type === "label") {
       // Label is text-only, no background shape
       fillColor = "none";
@@ -522,7 +534,18 @@ export function exportToSvg(scene, width = 800, height = 600) {
       maxY = Math.max(maxY, -item.y + 10);
     } else if (isCircular) {
       // Render circular items
-      const radius = item.type === "bookable-unit" ? 10 : 30;
+      let radius = 30;
+      if (item.type === "bookable-unit") {
+        radius = 10;
+      } else if (item.type === "table") {
+        // For circular tables, use diameter property
+        const diameter = item.properties && item.properties.get ? 
+          (item.properties.get("diameter") ? 
+            (item.properties.get("diameter").get ? item.properties.get("diameter").get("length") : item.properties.get("diameter")) 
+            : 80) 
+          : 80;
+        radius = diameter / 2;
+      }
       svgElements.push(
         <g key={`item-${itemId}`}>
           <circle

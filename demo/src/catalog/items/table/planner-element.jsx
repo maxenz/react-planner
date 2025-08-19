@@ -104,6 +104,15 @@ export default {
   },
 
   properties: {
+    shape: {
+      label: "Shape",
+      type: "enum",
+      defaultValue: "rectangular",
+      values: {
+        rectangular: "Rectangular",
+        circular: "Circular",
+      },
+    },
     width: {
       label: "width",
       type: "length-measure",
@@ -117,6 +126,14 @@ export default {
       type: "length-measure",
       defaultValue: {
         length: 50,
+        unit: "cm",
+      },
+    },
+    diameter: {
+      label: "diameter",
+      type: "length-measure",
+      defaultValue: {
+        length: 80,
         unit: "cm",
       },
     },
@@ -144,49 +161,58 @@ export default {
   },
 
   render2D: function (element, layer, scene) {
-    let newWidth = element.properties.get("width").get("length");
-    let newDepth = element.properties.get("depth").get("length");
-    let angle = element.rotation + 90;
-
-    let textRotation = 0;
-    if (Math.sin((angle * Math.PI) / 180) < 0) {
-      textRotation = 180;
-    }
-
+    const shape = element.properties.get("shape") || "rectangular";
     const customId = element.properties.get("customId") || "";
     const elementId = customId || `table-${element.id}`;
 
-    return (
-      <g transform={`translate(${-newWidth / 2},${-newDepth / 2})`}>
-        <rect
-          key="1"
-          x="0"
-          y="0"
-          width={newWidth}
-          height={newDepth}
+    if (shape === "circular") {
+      const diameter = element.properties.get("diameter").get("length");
+      const radius = diameter / 2;
+
+      return (
+        <circle
+          cx="0"
+          cy="0"
+          r={radius}
           id={elementId}
           data-custom-id={customId}
           data-element-type="item"
           data-element-id={element.id}
+          data-table-shape="circular"
           style={{
             stroke: element.selected ? "#0096fd" : "#000",
             strokeWidth: "2px",
-            fill: "#EEF3F9",
+            fill: "white",
           }}
         />
-        <text
-          key="2"
-          x="0"
-          y="0"
-          transform={`translate(${newWidth / 2}, ${
-            newDepth / 2
-          }) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}
-        >
-          {element.type}
-        </text>
-      </g>
-    );
+      );
+    } else {
+      // Rectangular table
+      let newWidth = element.properties.get("width").get("length");
+      let newDepth = element.properties.get("depth").get("length");
+
+      return (
+        <g transform={`translate(${-newWidth / 2},${-newDepth / 2})`}>
+          <rect
+            key="1"
+            x="0"
+            y="0"
+            width={newWidth}
+            height={newDepth}
+            id={elementId}
+            data-custom-id={customId}
+            data-element-type="item"
+            data-element-id={element.id}
+            data-table-shape="rectangular"
+            style={{
+              stroke: element.selected ? "#0096fd" : "#000",
+              strokeWidth: "2px",
+              fill: "white",
+            }}
+          />
+        </g>
+      );
+    }
   },
 
   render3D: function (element, layer, scene) {
